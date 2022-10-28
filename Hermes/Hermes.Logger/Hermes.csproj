@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>1.0.14</AssemblyVersion>
-    <FileVersion>1.0.14</FileVersion>
+    <!-- <AssemblyVersion>1.0.14</AssemblyVersion>
+    <FileVersion>1.0.14</FileVersion> -->
 
     <PackageId>HermesLog</PackageId>
-    <Company>Helix Tech</Company>
+    <!-- <Company>Helix Tech</Company> -->
     <Version>1.0.14</Version>
     <License>MIT</License>
     <Authors>David</Authors>
