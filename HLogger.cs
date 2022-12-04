@@ -1,9 +1,10 @@
-﻿using Hermes.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Hermes.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Hermes
 {
@@ -22,13 +23,17 @@ namespace Hermes
             {
                 var response = new List<LogResponseModel>();
                 var collection = SetConfiguration.GetMongoCollection();
-               
-                var filter = Builders<Log>.Filter.Where(x => x.StartProcessDate >= startProcessDateTime && x.EndProcessDate <= endProcessDateTime);            
-                var resultList = await collection.Find(filter)
-                  .Skip((page - 1) * pageSize)
-                  .Limit(pageSize)                                    
-                  .SortByDescending(a => a.EndProcessDate)
-                  .ToListAsync();
+
+                var collection2 = SetConfiguration.GetMongoCollection();
+                var query = collection.AsQueryable().Where(x => x.StartProcessDate >= startProcessDateTime && x.EndProcessDate <= endProcessDateTime);
+                var resultList = query.Skip(page).Take(pageSize).OrderByDescending(x => x.EndProcessDate).ToList();
+
+                // var filter = Builders<Log>.Filter.Where(x => x.StartProcessDate >= startProcessDateTime && x.EndProcessDate <= endProcessDateTime);            
+                // var resultList = await collection.Find(filter)
+                //   .Skip((page - 1) * pageSize)
+                //   .Limit(pageSize)                                    
+                //   .SortByDescending(a => a.EndProcessDate)
+                //   .ToListAsync();
 
                 foreach (var item in resultList)
                 {
@@ -44,9 +49,10 @@ namespace Hermes
                         StartProcessDate = item.StartProcessDate
                     };
 
-                    response.Add(temp);               
+                    response.Add(temp);
                 }
-                return response;
+
+                return await Task.FromResult(response);
             }
             catch (Exception)
             {
