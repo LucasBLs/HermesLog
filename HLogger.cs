@@ -21,13 +21,11 @@ namespace Hermes
         {
             try
             {
-                var response = new List<LogResponseModel>();
                 var collection = SetConfiguration.GetMongoCollection();
-
-                var collection2 = SetConfiguration.GetMongoCollection();
                 var query = collection.AsQueryable().Where(x => x.StartProcessDate >= startProcessDateTime && x.EndProcessDate <= endProcessDateTime);
                 var resultList = query.Skip(page).Take(pageSize).OrderByDescending(x => x.EndProcessDate).ToList();
 
+                // var collection = SetConfiguration.GetMongoCollection();
                 // var filter = Builders<Log>.Filter.Where(x => x.StartProcessDate >= startProcessDateTime && x.EndProcessDate <= endProcessDateTime);            
                 // var resultList = await collection.Find(filter)
                 //   .Skip((page - 1) * pageSize)
@@ -35,9 +33,10 @@ namespace Hermes
                 //   .SortByDescending(a => a.EndProcessDate)
                 //   .ToListAsync();
 
+                var response = new List<LogResponseModel>();
                 foreach (var item in resultList)
                 {
-                    var temp = new LogResponseModel()
+                    response.Add(new LogResponseModel
                     {
                         _id = item._id,
                         Author = item.Author,
@@ -47,11 +46,8 @@ namespace Hermes
                         Informations = item.Informations,
                         ProjectName = item.ProjectName,
                         StartProcessDate = item.StartProcessDate
-                    };
-
-                    response.Add(temp);
+                    });
                 }
-
                 return await Task.FromResult(response);
             }
             catch (Exception)
